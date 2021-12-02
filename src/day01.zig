@@ -11,8 +11,87 @@ const gpa = util.gpa;
 
 const data = @embedFile("../data/day01.txt");
 
-pub fn main() !void {
+pub fn part1() !void {
+    var iter = tokenize(u8, data, "\n");
+    var tok = iter.next();
+    var lastNum : u32 = 0; 
+    var curNum : u32 = 0; 
+    var numIncreases : u32 = 0; 
+    while(tok != null)
+    {
+        //print("{s}\n", .{tok.?});
+        curNum = parseInt(u32, tok.?, 10) catch |err| {
+            print("Error on parseInt: {any}\n", .{err}); 
+            tok = iter.next(); 
+            continue;
+        };
+        if((lastNum != 0) and (lastNum < curNum))
+        {
+            numIncreases+=1; 
+        }
+        lastNum = curNum; 
 
+        tok = iter.next();
+    } 
+    print("Part 1 Result: {d}\n", .{numIncreases}); 
+}
+
+
+pub fn part2() !void{
+    var iter = tokenize(u8, data, "\n");
+    var tok = iter.next();
+    var lastNum = [_]u32{0, 0, 0}; 
+    var curNum : u32 = 0; 
+    var numIncreases : u32 = 0; 
+    var curSum : u32 = 0; 
+    var lastSum : u32 = 0; 
+    //process first three separately
+    while(tok != null)
+    {
+        //print("{s}\n", .{tok.?});
+        curNum = parseInt(u32, tok.?, 10) catch |err| {
+            print("Error on parseInt: {any}\n", .{err}); 
+            tok = iter.next(); 
+            continue;
+        };
+        //first iterations
+        if(lastNum[0] == 0) 
+        {
+            lastNum[0] = curNum;
+        }
+        else if(lastNum[1] == 0)
+        {
+            lastNum[1] = curNum; 
+        }
+        else if(lastNum[2] == 0)
+        {
+            lastNum[2] = curNum;  
+            //generate current sum
+            lastSum = lastNum[0] + lastNum[1] + lastNum[2]; 
+        }
+        else //actual work
+        {
+            //use lastNum[1], lastNum[2] and curNum for curSum
+            curSum = lastNum[1] + lastNum[2] + curNum; 
+            if(curSum > lastSum)
+                numIncreases += 1; 
+
+            //set lastNum to accomodate new number
+            lastNum[0] = lastNum[1]; 
+            lastNum[1] = lastNum[2]; 
+            lastNum[2] = curNum; 
+            lastSum = curSum; 
+        }
+
+        tok = iter.next();
+    } 
+    print("Part 2 Result: {d}\n", .{numIncreases}); 
+}
+
+pub fn main() !void {
+    try part1(); 
+    try part2(); 
+    
 }
 
 // Useful stdlib functions
