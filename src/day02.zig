@@ -12,7 +12,68 @@ const gpa = util.gpa;
 const data = @embedFile("../data/day02.txt");
 
 pub fn main() !void {
-    
+    try part1(); 
+    try part2(); 
+}
+
+pub fn part2() !void{
+    var horizontal_move : i64 = 0; 
+    var vertical_move : i64 = 0;
+    var aim : i64 = 0; 
+    var iter = tokenize(u8, data, "\n"); 
+    while(iter.next()) |tok| 
+    {
+        var str_iter = tokenize(u8, tok, " "); 
+        var dir = str_iter.next().?; 
+        var amount = parseInt(i64, str_iter.next().?, 10) catch |err| {
+            print("Error on parseInt: {any}\n", .{err});
+            continue; 
+        }; 
+        if(std.mem.eql(u8, dir, "forward"))
+        {
+            horizontal_move += amount; 
+            vertical_move += aim * amount; 
+        }
+        else if(std.mem.eql(u8, dir, "down"))
+        {
+            aim += amount; 
+        }
+        else if(std.mem.eql(u8, dir, "up"))
+        {
+            aim -= amount; 
+        }
+        //print("Test: {s} {s}\n", .{dir, amount}); 
+    }
+    print("Part 2: {d}\n", .{horizontal_move * vertical_move}); 
+}
+
+pub fn part1() !void {
+    var horizontal_move : i64 = 0; 
+    var vertical_move : i64 = 0; 
+    var iter = tokenize(u8, data, "\n"); 
+    while(iter.next()) |tok| 
+    {
+        var str_iter = tokenize(u8, tok, " "); 
+        var dir = str_iter.next().?; 
+        var amount = parseInt(i64, str_iter.next().?, 10) catch |err| {
+            print("Error on parseInt: {any}\n", .{err});
+            continue; 
+        }; 
+        if(std.mem.eql(u8, dir, "forward"))
+        {
+            horizontal_move += amount; 
+        }
+        else if(std.mem.eql(u8, dir, "down"))
+        {
+            vertical_move += amount; 
+        }
+        else if(std.mem.eql(u8, dir, "up"))
+        {
+            vertical_move -= amount; 
+        }
+        //print("Test: {s} {s}\n", .{dir, amount}); 
+    }
+    print("Part 1: {d}\n", .{horizontal_move * vertical_move}); 
 }
 
 // Useful stdlib functions
